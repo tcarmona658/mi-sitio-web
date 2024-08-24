@@ -1,0 +1,98 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Interactivo sobre IA y Chatbots</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; color: #333; }
+        .hero { background: #0072ff; color: white; padding: 100px 20px; text-align: center; }
+        .hero h1 { font-size: 2.5em; margin: 0; }
+        .hero p { font-size: 1.2em; margin: 20px 0; }
+        .hero button { padding: 20px 40px; font-size: 1.5em; color: white; background-color: #ff7f50; border: none; cursor: pointer; transition: background-color 0.3s ease; }
+        .hero button:hover { background-color: #ff5722; animation: pulse 0.6s infinite; }
+        .features, .testimonial, .contact { padding: 50px 20px; text-align: center; background-color: white; margin-bottom: 20px; opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+        .features.visible, .testimonial.visible { opacity: 1; transform: translateY(0); }
+        .features h2, .testimonial h2, .contact h2 { font-size: 1.8em; color: #0072ff; cursor: pointer; }
+        .contact { transition: max-height 0.5s ease-out; overflow: hidden; max-height: 0; }
+        .contact.active { max-height: 500px; animation: slideDownFadeIn 0.5s ease-out forwards; }
+        .contact form { max-width: 400px; margin: 0 auto; text-align: left; }
+        .contact label { display: block; margin: 10px 0 5px; font-weight: bold; }
+        .contact input, .contact textarea { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .contact button { padding: 10px 20px; font-size: 1em; color: white; background-color: #0072ff; border: none; cursor: pointer; transition: background-color 0.3s ease; }
+        .contact button:hover { background-color: #005bb5; }
+        .chatbot { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background-color: #0072ff; color: white; display: flex; align-items: center; justify-content: center; font-size: 1.5em; cursor: pointer; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); transition: transform 0.3s ease, background-color 0.3s ease; animation: bounce 2s infinite; }
+        .chatbot:hover { transform: scale(1.1); background-color: #005bb5; animation: bounceHover 0.6s infinite; }
+        .chatbot::before { content: '\1F4AC'; font-size: 1.3em; } /* Icono de burbuja de chat */
+        .chat-container { position: fixed; bottom: 90px; right: 20px; width: 300px; background-color: white; border-radius: 10px; display: none; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); animation: fadeIn 0.5s; }
+        .chat-header { background-color: #0072ff; color: white; padding: 10px; border-radius: 10px 10px 0 0; text-align: center; font-weight: bold; }
+        .chat-messages { padding: 10px; height: 200px; overflow-y: auto; }
+        .chat-input { padding: 10px; display: flex; }
+        .chat-input input { flex-grow: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        .chat-input button { background-color: #0072ff; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-10px); } 60% { transform: translateY(-5px); } }
+        @keyframes slideDownFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        @keyframes bounceHover {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+    </style>
+</head>
+<body role="main">
+    <header class="hero">
+        <h1>Atención al Cliente Automatizada</h1>
+        <p>Optimiza tus procesos con nuestro chatbot avanzado.</p>
+        <button id="start-button" aria-controls="contact-section">Comienza Ahora</button>
+    </header>
+    <section class="features" role="region" aria-labelledby="features-heading">
+        <h2 id="features-heading">Características Principales</h2>
+        <p>Fácil de usar, altamente personalizable y disponible 24/7.</p>
+    </section>
+    <section class="testimonial" role="region" aria-labelledby="testimonial-heading">
+        <h2 id="testimonial-heading">Testimonios</h2>
+        <p>"El chatbot mejoró significativamente nuestra atención al cliente."</p>
+    </section>
+    <section class="contact" id="contact-section" role="form" aria-labelledby="contact-heading">
+        <h2 id="contact-heading">Contacto</h2>
+        <form id="contact-form" aria-labelledby="contact-heading">
+            <label for="name">Nombre:</label>
+            <input type="text" id="name" name="name" required aria-required="true">
+            <label for="email">Correo Electrónico:</label>
+            <input type="email" id="email" name="email" required aria-required="true">
+            <label for="message">Mensaje:</label>
+            <textarea id="message" name="message" rows="4" required aria-required="true"></textarea>
+            <button type="submit">Enviar</button>
+        </form>
+    </section>
+    <div class="chatbot" aria-label="Abrir chat"></div>
+    <div class="chat-container" aria-live="polite">
+        <div class="chat-header">Asistente Virtual</div>
+        <div class="chat-messages" role="log" aria-live="polite"></div>
+        <div class="chat-input"><input type="text" placeholder="Escribe un mensaje..." aria-label="Escribe tu mensaje aquí"><button>Enviar</button></div>
+    </div>
